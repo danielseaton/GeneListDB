@@ -9,7 +9,7 @@ setup_pub_schema = """CREATE TABLE publications (
                     first_author  VARCHAR(20),
                     last_author  VARCHAR(20),
                     journal   VARCHAR(60),
-                    year   YEAR(4) )"""
+                    year   CHAR(4) )"""
 
 setup_list_info_schema = """CREATE TABLE list_info (
                     list_id  MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -18,19 +18,19 @@ setup_list_info_schema = """CREATE TABLE list_info (
                     PMID  VARCHAR(8))"""
 
 setup_list_schema = """CREATE TABLE gene_lists (
-                     locus_id CHAR(8) NOT NULL,
+                     locus_id CHAR(9) NOT NULL,
                      list_id MEDIUMINT NOT NULL)"""
 
-for table_name in ['publications','list_info','gene_lists']:
-    try:
-        #execute the sql command
-        cursor.execute('DROP TABLE %s' % (table_name))
-        #commit changes
-        db.commit()
-    except:
-        # rollback if there's a problem
-        print "Failed to drop "+table_name
-        db.rollback()
+#for table_name in ['publications','list_info','gene_lists']:
+#    try:
+#        #execute the sql command
+#        cursor.execute('DROP TABLE %s' % (table_name))
+#        #commit changes
+#        db.commit()
+#    except:
+#        # rollback if there's a problem
+#        print "Failed to drop "+table_name
+#        db.rollback()
 
 for sql in [setup_pub_schema,setup_list_info_schema,setup_list_schema]:
     try:
