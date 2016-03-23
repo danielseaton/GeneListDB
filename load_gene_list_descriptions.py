@@ -39,14 +39,9 @@ if result_count == 0:
     try:
         #insert list into list info
         cursor.execute("""INSERT INTO list_info (list_name,description,PMID) VALUES (%s,%s,%s)""",list_info)
-        #check whether list_id is already present in database
-        cursor.execute("""SELECT list_id FROM list_info WHERE list_name=%s AND description=%s AND PMID=%s""",list_info)
-        result = cursor.fetchall()[0]
-        #there should only be one list_id with exactly this list info (or the list has been added multiple times)
-        assert len(result)==1
-        list_id = result[0]
+        list_name = list_info[0]
         for locus_id in gene_list:
-            cursor.execute("""INSERT INTO gene_lists (locus_id,list_id) VALUES (%s,%s)""",[locus_id,list_id])
+            cursor.execute("""INSERT INTO gene_lists (locus_id,list_name) VALUES (%s,%s)""",[locus_id,list_name])
         db.commit()
     except:
         print 'Failed to add list to DB: {0}'.format(*list_info)

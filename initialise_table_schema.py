@@ -12,14 +12,13 @@ setup_pub_schema = """CREATE TABLE publications (
                     year   CHAR(4) )"""
 
 setup_list_info_schema = """CREATE TABLE list_info (
-                    list_id  MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                    list_name  VARCHAR(60) NOT NULL,
+                    list_name  VARCHAR(60) NOT NULL PRIMARY KEY,
                     description  VARCHAR(1000),
                     PMID  VARCHAR(8))"""
 
 setup_list_schema = """CREATE TABLE gene_lists (
                      locus_id CHAR(9) NOT NULL,
-                     list_id MEDIUMINT NOT NULL)"""
+                     list_name VARCHAR(60) NOT NULL)"""
 
 #for table_name in ['publications','list_info','gene_lists']:
 #    try:
