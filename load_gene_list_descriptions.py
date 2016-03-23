@@ -22,7 +22,7 @@ with open('phyA_chip_seq_list.txt','r') as f:
 
 pub_info = input_file[0].strip().split('\t')
 list_info = input_file[1].strip().split('\t')
-gene_list = [x.strip() for x in input_file[2:]]
+gene_list = list(set([x.strip() for x in input_file[2:]]))
 
 pmid,year = pub_info[0],pub_info[5]
 assert(re.match('[0-9]{4}',year))
