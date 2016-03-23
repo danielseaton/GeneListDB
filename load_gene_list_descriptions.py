@@ -32,6 +32,9 @@ list_info = input_file[1].strip().split('\t')
 gene_list = [x.strip() for x in input_file[2:]]
 
 ###TODO - assert correct format and types of strings
+pmid,year = pub_info[0],pub_info[5]
+assert(re.match('[0-9]{4}',year))
+assert(re.match('[0-9]+',pmid))
 
 pub_sql = """INSERT INTO publications (PMID,title,first_author,last_author,journal,year)
         VALUES (%s,%s,%s,%s,%s,%s)"""
