@@ -22,10 +22,14 @@ def execute_sql_command(sql,parameters):
         db.commit()
     except:
         #TODO - elaborate on error information from execute statement
-        print 'Failed to run SQL command: '+sql
+#        print 'Failed to run SQL command: '+sql  #don't worry about this for now
         # rollback if there's a problem
         db.rollback()
 
+
+added_lists = []
+already_present_lists = []
+failed_to_load_lists = []
 
 for filename in genelist_file_list:
     with open(filename,'r') as f:
@@ -33,6 +37,7 @@ for filename in genelist_file_list:
     
     pub_info = input_file[0].strip().split('\t')
     list_info = input_file[1].strip().split('\t')
+    list_name = list_info[0]
     gene_list = list(set([x.strip() for x in input_file[2:]]))
     
     pmid,year = pub_info[0],pub_info[5]
@@ -50,12 +55,24 @@ for filename in genelist_file_list:
         try:
             #insert list into list info
             cursor.execute("""INSERT INTO list_info (list_name,description,PMID) VALUES (%s,%s,%s)""",list_info)
-            list_name = list_info[0]
             for locus_id in gene_list:
                 cursor.execute("""INSERT INTO gene_lists (locus_id,list_name) VALUES (%s,%s)""",[locus_id,list_name])
             db.commit()
+            added_lists.append(list_name)
         except:
-            print 'Failed to add list to DB: {0}'.format(*list_info)
+            failed_to_load_lists.append(list_name)
             db.rollback()
     else:
-        print "{0} already contained in database".format(list_info[0])
+        already_present_lists.append(list_name)
+
+print 'Added lists:'
+for x in added_lists:
+    print x
+print ''
+print 'Failed to load:'
+for x in failed_to_load_lists:
+    print x
+print ''
+print 'Already present:'
+for x in already_present_lists:
+    print x
