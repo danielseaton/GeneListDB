@@ -2,6 +2,7 @@ import pandas as pd
 import re
 import MySQLdb
 import os
+import string
 
 #load all genelists
 home_dir = os.getenv('HOME')
@@ -39,6 +40,8 @@ for filename in genelist_file_list:
     list_info = input_file[1].strip().split('\t')
     list_name = list_info[0]
     gene_list = list(set([x.strip() for x in input_file[2:]]))
+    #convert any lowercase agi codes to uppercase
+    gene_list = [string.upper(x) for x in gene_list]
     
     pmid,year = pub_info[0],pub_info[5]
     assert(re.match('[0-9]{4}',year))
