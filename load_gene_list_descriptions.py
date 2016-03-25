@@ -79,3 +79,5 @@ print ''
 print 'Already present:'
 for x in already_present_lists:
     print x
+
+db.close()

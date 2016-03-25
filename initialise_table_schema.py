@@ -41,3 +41,5 @@ for sql in [setup_pub_schema,setup_list_info_schema,setup_list_schema]:
         print 'Failed to run query: '+sql
         # rollback if there's a problem
         db.rollback()
+
+db.close()
