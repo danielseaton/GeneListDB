@@ -35,21 +35,27 @@ for filename in genelist_file_list:
     with open(filename,'r') as f:
         input_file = f.readlines()
     
-    pub_info = input_file[0].strip().split('\t')
-    list_info = input_file[1].strip().split('\t')
+    #check where gene list starts
+    if re.match('[Aa][tT][0-9CM][Gg][0-9]{5}',input_file[2].strip()):
+        #two header entries, so first entry is publication info
+        pub_info = input_file[0].strip().split('\t')
+        pub_sql = """INSERT INTO publications (PMID,title,first_author,last_author,journal,year)
+                    VALUES (%s,%s,%s,%s,%s,%s)"""
+        execute_sql_command(pub_sql,pub_info)
+        start_idx = 2
+    else:
+        start_idx = 1
+    
+    list_info = input_file[start_idx-1].strip().split('\t')
     list_name = list_info[0]
-    gene_list = list(set([x.strip() for x in input_file[2:]]))
+    gene_list = list(set([x.strip() for x in input_file[start_idx:]]))
     #convert any lowercase agi codes to uppercase
     gene_list = [string.upper(x) for x in gene_list]
     
     pmid,year = pub_info[0],pub_info[5]
     assert(re.match('[0-9]{4}',year))
     assert(re.match('[0-9]+',pmid))
-    
-    pub_sql = """INSERT INTO publications (PMID,title,first_author,last_author,journal,year)
-            VALUES (%s,%s,%s,%s,%s,%s)"""
-    execute_sql_command(pub_sql,pub_info)
-    
+        
     #check whether list has already been added
     cursor.execute("""SELECT count(*) FROM list_info WHERE list_name=%s AND description=%s AND PMID=%s""",list_info)
     result_count = cursor.fetchall()[0][0]
