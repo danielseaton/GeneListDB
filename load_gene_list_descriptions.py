@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-import MySQLdb
+from connect_to_db import connect_to_db
 import os
 import string
 
@@ -12,7 +12,7 @@ for root, dirs, files in os.walk(home_dir+"/Dropbox/Work/Circadian/Data/"):
         if file.endswith(".genelist"):
              genelist_file_list.append(os.path.join(root, file))
 
-db = MySQLdb.connect("localhost","root","zoomzoom","GeneListDB")
+db = connect_to_db()
 cursor = db.cursor()
 
 def execute_sql_command(sql,parameters):

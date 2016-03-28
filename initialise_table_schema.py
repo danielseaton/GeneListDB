@@ -1,6 +1,6 @@
-import MySQLdb
+from connect_to_db import connect_to_db
 
-db = MySQLdb.connect("localhost","root","zoomzoom","GeneListDB")
+db = connect_to_db()
 cursor = db.cursor()
 
 setup_pub_schema = """CREATE TABLE publications (
