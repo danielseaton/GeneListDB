@@ -1,4 +1,3 @@
-import pandas as pd
 import re
 from connect_to_db import connect_to_db
 import os
