@@ -36,25 +36,26 @@ for filename in genelist_file_list:
         input_file = f.readlines()
     
     #check where gene list starts
-    if re.match('[Aa][tT][0-9CM][Gg][0-9]{5}',input_file[2].strip()):
+    if re.match('[Aa][tT][0-9CM][Gg][0-9]{5}',input_file[1].strip()):
+        #only one header entry
+        start_idx = 1
+    else:
         #two header entries, so first entry is publication info
         pub_info = input_file[0].strip().split('\t')
+        pmid,year = pub_info[0],pub_info[5]
+        assert(re.match('[0-9]{4}',year))
+        assert(re.match('[0-9]+',pmid))
         pub_sql = """INSERT INTO publications (PMID,title,first_author,last_author,journal,year)
                     VALUES (%s,%s,%s,%s,%s,%s)"""
         execute_sql_command(pub_sql,pub_info)
         start_idx = 2
-    else:
-        start_idx = 1
+
     
     list_info = input_file[start_idx-1].strip().split('\t')
     list_name = list_info[0]
     gene_list = list(set([x.strip() for x in input_file[start_idx:]]))
     #convert any lowercase agi codes to uppercase
     gene_list = [string.upper(x) for x in gene_list]
-    
-    pmid,year = pub_info[0],pub_info[5]
-    assert(re.match('[0-9]{4}',year))
-    assert(re.match('[0-9]+',pmid))
         
     #check whether list has already been added
     cursor.execute("""SELECT count(*) FROM list_info WHERE list_name=%s AND description=%s AND PMID=%s""",list_info)
@@ -64,7 +65,9 @@ for filename in genelist_file_list:
             #insert list into list info
             cursor.execute("""INSERT INTO list_info (list_name,description,PMID) VALUES (%s,%s,%s)""",list_info)
             for locus_id in gene_list:
-                cursor.execute("""INSERT INTO gene_lists (locus_id,list_name) VALUES (%s,%s)""",[locus_id,list_name])
+                #only add if its a single locus id on its own
+                if re.match(r'AT[0-9CM]G[0-9]{5}$',locus_id):
+                    cursor.execute("""INSERT INTO gene_lists (locus_id,list_name) VALUES (%s,%s)""",[locus_id,list_name])
             db.commit()
             added_lists.append(list_name)
         except:
