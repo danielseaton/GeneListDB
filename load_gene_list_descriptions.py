@@ -76,6 +76,10 @@ for filename in genelist_file_list:
     else:
         already_present_lists.append(list_name)
 
+print 'Already present:'
+for x in already_present_lists:
+    print x
+print ''
 print 'Added lists:'
 for x in added_lists:
     print x
@@ -83,9 +87,6 @@ print ''
 print 'Failed to load:'
 for x in failed_to_load_lists:
     print x
-print ''
-print 'Already present:'
-for x in already_present_lists:
-    print x
+
 
 db.close()
