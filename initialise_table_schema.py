@@ -1,6 +1,6 @@
-from connect_to_db import connect_to_db
+import sqlite3
 
-db = connect_to_db()
+db = sqlite3.connect('GeneListDB.db')
 cursor = db.cursor()
 
 setup_pub_schema = """CREATE TABLE publications (

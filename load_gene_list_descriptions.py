@@ -1,5 +1,5 @@
 import re
-from connect_to_db import connect_to_db
+import sqlite3
 import os
 import string
 
@@ -11,7 +11,7 @@ for root, dirs, files in os.walk(home_dir+"/Dropbox/Work/Circadian/Data/"):
         if file.endswith(".genelist"):
              genelist_file_list.append(os.path.join(root, file))
 
-db = connect_to_db()
+db = sqlite3.connect('GeneListDB.db')
 cursor = db.cursor()
 
 def execute_sql_command(sql,parameters):
@@ -46,7 +46,7 @@ for filename in genelist_file_list:
         assert(re.match('[0-9]{4}',year))
         assert(re.match('[0-9]+',pmid))
         pub_sql = """INSERT INTO publications (PMID,title,first_author,last_author,journal,year)
-                    VALUES (%s,%s,%s,%s,%s,%s)"""
+                    VALUES (?,?,?,?,?,?)"""
         execute_sql_command(pub_sql,pub_info)
         start_idx = 2
 
@@ -58,16 +58,16 @@ for filename in genelist_file_list:
     gene_list = [string.upper(x) for x in gene_list]
         
     #check whether list has already been added
-    cursor.execute("""SELECT count(*) FROM list_info WHERE list_name=%s AND description=%s AND PMID=%s""",list_info)
+    cursor.execute("""SELECT count(*) FROM list_info WHERE list_name=? AND description=? AND PMID=?""",list_info)
     result_count = cursor.fetchall()[0][0]
     if result_count == 0:
         try:
             #insert list into list info
-            cursor.execute("""INSERT INTO list_info (list_name,description,PMID) VALUES (%s,%s,%s)""",list_info)
+            cursor.execute("""INSERT INTO list_info (list_name,description,PMID) VALUES (?,?,?)""",list_info)
             for locus_id in gene_list:
                 #only add if its a single locus id on its own
                 if re.match(r'AT[0-9CM]G[0-9]{5}$',locus_id):
-                    cursor.execute("""INSERT INTO gene_lists (locus_id,list_name) VALUES (%s,%s)""",[locus_id,list_name])
+                    cursor.execute("""INSERT INTO gene_lists (locus_id,list_name) VALUES (?,?)""",[locus_id,list_name])
             db.commit()
             added_lists.append(list_name)
         except:
