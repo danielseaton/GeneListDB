@@ -1,6 +1,11 @@
 import sqlite3
 
-db = sqlite3.connect('GeneListDB.db')
+##### USER INPUT STARTS
+#Specify the database file to be initialised
+database_file_path = 'GeneListDB.db'
+##### USER INPUT ENDS
+
+db = sqlite3.connect(database_file_path)
 cursor = db.cursor()
 
 setup_pub_schema = """CREATE TABLE publications (

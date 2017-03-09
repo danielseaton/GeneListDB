@@ -3,15 +3,32 @@ import sqlite3
 import os
 import string
 
-#load all genelists
+
+##### USER INPUT STARTS
+
+#Specify the path to the data directory - this will be recursively searched
+# for all files with the ".genelist" suffix.
 home_dir = os.getenv('HOME')
+data_directory = home_dir+"/Dropbox/Work/Circadian/Data/"
+
+#Specify the path to the database file
+database_file = 'GeneListDB.db'
+
+
+##### USER INPUT ENDS
+
+
+
+
+#Find genelists
 genelist_file_list = []
-for root, dirs, files in os.walk(home_dir+"/Dropbox/Work/Circadian/Data/"):
+for root, dirs, files in os.walk(data_directory):
     for file in files:
         if file.endswith(".genelist"):
              genelist_file_list.append(os.path.join(root, file))
 
-db = sqlite3.connect('GeneListDB.db')
+#Connect to database
+db = sqlite3.connect(database_file)
 cursor = db.cursor()
 
 def execute_sql_command(sql,parameters):
