@@ -93,6 +93,11 @@ for filename in genelist_file_list:
     else:
         already_present_lists.append(list_name)
 
+cursor.execute("""CREATE INDEX index_by_list_name ON gene_lists (list_name)""")
+cursor.execute("""CREATE INDEX index_by_locus_id ON gene_lists (locus_id)""")
+
+db.commit()
+
 print 'Already present:'
 for x in already_present_lists:
     print x
