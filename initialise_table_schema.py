@@ -25,18 +25,14 @@ setup_list_schema = """CREATE TABLE gene_lists (
                      locus_id CHAR(9) NOT NULL,
                      list_name VARCHAR(60) NOT NULL)"""
 
-#for table_name in ['publications','list_info','gene_lists']:
-#    try:
-#        #execute the sql command
-#        cursor.execute('DROP TABLE %s' % (table_name))
-#        #commit changes
-#        db.commit()
-#    except:
-#        # rollback if there's a problem
-#        print "Failed to drop "+table_name
-#        db.rollback()
+index_by_list_name = """CREATE INDEX index_by_list_name ON gene_lists (list_name)"""
+index_by_locus_id = """CREATE INDEX index_by_locus_id ON gene_lists (locus_id)"""
 
-for sql in [setup_pub_schema,setup_list_info_schema,setup_list_schema]:
+for sql in [setup_pub_schema,
+            setup_list_info_schema,
+            setup_list_schema,
+            index_by_list_name,
+            index_by_locus_id]:
     try:
         #execute the sql command
         cursor.execute(sql)
